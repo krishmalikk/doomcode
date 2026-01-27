@@ -4,8 +4,8 @@ set -eo pipefail
 echo "=== Xcode Cloud ci_post_clone.sh ==="
 echo "Current directory: $(pwd)"
 
-# Navigate to monorepo root (from ios/ci_scripts -> root)
-cd ../../
+# Navigate to monorepo root (from apps/mobile/ios/ci_scripts -> root)
+cd ../../../../
 REPO_ROOT=$(pwd)
 echo "Repo root: $REPO_ROOT"
 
