@@ -3,10 +3,9 @@ set -e
 
 echo "=== Xcode Cloud ci_post_clone.sh ==="
 echo "Current directory: $(pwd)"
-echo "Repository root: $CI_PRIMARY_REPOSITORY_PATH"
 
-# Navigate to iOS project directory
-cd "$CI_PRIMARY_REPOSITORY_PATH/apps/mobile/ios"
+# Navigate to iOS project directory (one level up from ci_scripts)
+cd "$(dirname "$0")/.."
 echo "Changed to: $(pwd)"
 
 # Install CocoaPods if not available
