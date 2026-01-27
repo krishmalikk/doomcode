@@ -17,6 +17,13 @@ brew install node pnpm cocoapods
 echo "Installing JS dependencies with pnpm..."
 pnpm install --frozen-lockfile
 
+# Navigate to mobile app directory and run expo prebuild
+cd "$REPO_ROOT/apps/mobile"
+echo "Mobile app directory: $(pwd)"
+
+echo "Running expo prebuild to regenerate native code..."
+npx expo prebuild --clean --platform ios
+
 # Navigate to iOS directory and run pod install
 cd "$REPO_ROOT/apps/mobile/ios"
 echo "iOS directory: $(pwd)"
