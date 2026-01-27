@@ -9,11 +9,8 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import {
-  PREDEFINED_INTENTS,
-  getSuggestedIntents,
-  type PredefinedIntent,
-} from '../../utils/intentParser';
+import { INTENTS_BY_AGENT, getSuggestedIntents, type PredefinedIntent } from '../../utils/intentParser';
+import { useAgentStore } from '../../store/agentStore';
 
 interface CommandPaletteProps {
   visible: boolean;
@@ -23,7 +20,9 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ visible, onClose, onSelectIntent }: CommandPaletteProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const suggestedIntents = getSuggestedIntents(searchQuery);
+  const { activeAgentId } = useAgentStore();
+  const suggestedIntents = getSuggestedIntents(searchQuery, activeAgentId);
+  const allIntents = INTENTS_BY_AGENT[activeAgentId] ?? [];
 
   const handleSelectIntent = (intent: PredefinedIntent) => {
     onSelectIntent(intent.prompt);
@@ -107,7 +106,7 @@ export function CommandPalette({ visible, onClose, onSelectIntent }: CommandPale
             {!searchQuery && (
               <View style={styles.allIntentsSection}>
                 <Text style={styles.sectionTitle}>All Commands</Text>
-                {PREDEFINED_INTENTS.filter(
+                {allIntents.filter(
                   (i) => !suggestedIntents.find((s) => s.id === i.id)
                 ).map((intent) => (
                   <TouchableOpacity

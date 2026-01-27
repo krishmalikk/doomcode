@@ -22,7 +22,12 @@ export default function HomeScreen() {
           <Text style={styles.infoTitle}>How it works</Text>
           <View style={styles.infoItem}>
             <Text style={styles.infoNumber}>1</Text>
-            <Text style={styles.infoText}>Run `doomcode start` on your desktop</Text>
+            <View style={styles.infoBody}>
+              <Text style={styles.infoText}>Run this in your desktop terminal</Text>
+              <View style={styles.terminalBlock}>
+                <Text style={styles.terminalText}>$ doomcode start</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.infoNumber}>2</Text>
@@ -102,6 +107,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  infoBody: {
+    flex: 1,
+  },
   infoNumber: {
     width: 28,
     height: 28,
@@ -117,5 +125,19 @@ const styles = StyleSheet.create({
     color: '#a0a0a0',
     fontSize: 14,
     flex: 1,
+  },
+  terminalBlock: {
+    backgroundColor: '#000000',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#333333',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginTop: 8,
+  },
+  terminalText: {
+    color: '#ffffff',
+    fontSize: 13,
+    fontFamily: 'Menlo',
   },
 });

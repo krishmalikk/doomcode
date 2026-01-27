@@ -28,12 +28,14 @@ const defaultClaudeConfig: AgentConfig = {
 
 const defaultCodexConfig: AgentConfig = {
   id: 'codex',
+  model: 'gpt-4.1',
   temperature: 0.7,
   toolPermissions: defaultToolPermissions,
 };
 
 const defaultGeminiConfig: AgentConfig = {
   id: 'gemini',
+  model: 'gemini-2.0-flash',
   temperature: 0.7,
   toolPermissions: defaultToolPermissions,
 };

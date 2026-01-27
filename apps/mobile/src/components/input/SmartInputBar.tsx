@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CommandPalette } from './CommandPalette';
 import { VoiceInputButton } from './VoiceInputButton';
 import { getSuggestedIntents, type PredefinedIntent } from '../../utils/intentParser';
+import { useAgentStore } from '../../store/agentStore';
 
 interface SmartInputBarProps {
   onSend: (prompt: string) => void;
@@ -23,8 +24,9 @@ export function SmartInputBar({ onSend, disabled }: SmartInputBarProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const insets = useSafeAreaInsets();
+  const { activeAgentId } = useAgentStore();
 
-  const suggestions = getSuggestedIntents(prompt).slice(0, 3);
+  const suggestions = getSuggestedIntents(prompt, activeAgentId).slice(0, 3);
 
   const handleSend = () => {
     if (prompt.trim() && !disabled) {

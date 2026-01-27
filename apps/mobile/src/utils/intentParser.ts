@@ -1,3 +1,5 @@
+import type { AgentId } from '@doomcode/protocol';
+
 export type IntentAction = 'fix' | 'refactor' | 'explain' | 'generate' | 'review' | 'custom';
 
 export interface StructuredIntent {
@@ -116,80 +118,191 @@ export interface PredefinedIntent {
   action: IntentAction;
 }
 
-export const PREDEFINED_INTENTS: PredefinedIntent[] = [
-  {
-    id: 'fix-tests',
-    label: 'Fix failing tests',
-    description: 'Find and fix failing test cases',
-    prompt: 'Fix the failing tests and make sure all tests pass',
-    icon: '🔧',
-    action: 'fix',
-  },
-  {
-    id: 'refactor-auth',
-    label: 'Refactor auth',
-    description: 'Clean up authentication code',
-    prompt: 'Refactor the authentication module for better maintainability',
-    icon: '🔐',
-    action: 'refactor',
-  },
-  {
-    id: 'explain-file',
-    label: 'Explain this file',
-    description: 'Get an overview of the current file',
-    prompt: 'Explain what this file does and how it works',
-    icon: '📖',
-    action: 'explain',
-  },
-  {
-    id: 'explain-repo',
-    label: 'Explain this repo',
-    description: 'Get an overview of the codebase',
-    prompt: 'Give me an overview of this repository, its structure, and main components',
-    icon: '🗂️',
-    action: 'explain',
-  },
-  {
-    id: 'generate-pr',
-    label: 'Generate PR description',
-    description: 'Create a pull request description',
-    prompt: 'Generate a comprehensive pull request description for the current changes',
-    icon: '📝',
-    action: 'generate',
-  },
-  {
-    id: 'review-changes',
-    label: 'Review my changes',
-    description: 'Get feedback on recent changes',
-    prompt: 'Review my recent code changes and suggest improvements',
-    icon: '👀',
-    action: 'review',
-  },
-  {
-    id: 'add-tests',
-    label: 'Add tests',
-    description: 'Generate test cases for the code',
-    prompt: 'Generate comprehensive tests for the current code',
-    icon: '🧪',
-    action: 'generate',
-  },
-  {
-    id: 'fix-lint',
-    label: 'Fix lint errors',
-    description: 'Fix linting and formatting issues',
-    prompt: 'Fix all linting and formatting errors in the codebase',
-    icon: '✨',
-    action: 'fix',
-  },
-];
+export const INTENTS_BY_AGENT: Record<AgentId, PredefinedIntent[]> = {
+  claude: [
+    {
+      id: 'claude-fix-tests',
+      label: 'Fix failing tests',
+      description: 'Find and fix failing test cases',
+      prompt: 'Fix the failing tests and make sure all tests pass',
+      icon: '🔧',
+      action: 'fix',
+    },
+    {
+      id: 'claude-refactor-auth',
+      label: 'Refactor auth',
+      description: 'Clean up authentication code',
+      prompt: 'Refactor the authentication module for better maintainability',
+      icon: '🔐',
+      action: 'refactor',
+    },
+    {
+      id: 'claude-explain-file',
+      label: 'Explain this file',
+      description: 'Get an overview of the current file',
+      prompt: 'Explain what this file does and how it works',
+      icon: '📖',
+      action: 'explain',
+    },
+    {
+      id: 'claude-explain-repo',
+      label: 'Explain this repo',
+      description: 'Get an overview of the codebase',
+      prompt: 'Give me an overview of this repository, its structure, and main components',
+      icon: '🗂️',
+      action: 'explain',
+    },
+    {
+      id: 'claude-generate-pr',
+      label: 'Generate PR description',
+      description: 'Create a pull request description',
+      prompt: 'Generate a comprehensive pull request description for the current changes',
+      icon: '📝',
+      action: 'generate',
+    },
+    {
+      id: 'claude-review-changes',
+      label: 'Review my changes',
+      description: 'Get feedback on recent changes',
+      prompt: 'Review my recent code changes and suggest improvements',
+      icon: '👀',
+      action: 'review',
+    },
+    {
+      id: 'claude-add-tests',
+      label: 'Add tests',
+      description: 'Generate test cases for the code',
+      prompt: 'Generate comprehensive tests for the current code',
+      icon: '🧪',
+      action: 'generate',
+    },
+    {
+      id: 'claude-fix-lint',
+      label: 'Fix lint errors',
+      description: 'Fix linting and formatting issues',
+      prompt: 'Fix all linting and formatting errors in the codebase',
+      icon: '✨',
+      action: 'fix',
+    },
+  ],
+  codex: [
+    {
+      id: 'codex-implement-feature',
+      label: 'Implement feature',
+      description: 'Ship a new feature end-to-end',
+      prompt: 'Implement the feature end-to-end, including any necessary updates',
+      icon: '🚀',
+      action: 'generate',
+    },
+    {
+      id: 'codex-add-tests',
+      label: 'Add tests',
+      description: 'Write or extend automated tests',
+      prompt: 'Add or update tests to cover the recent changes',
+      icon: '🧪',
+      action: 'generate',
+    },
+    {
+      id: 'codex-fix-bug',
+      label: 'Fix a bug',
+      description: 'Find the root cause and patch it',
+      prompt: 'Find the root cause of the issue and fix it',
+      icon: '🧰',
+      action: 'fix',
+    },
+    {
+      id: 'codex-refactor',
+      label: 'Refactor module',
+      description: 'Improve structure and readability',
+      prompt: 'Refactor the module for clarity and maintainability',
+      icon: '🧱',
+      action: 'refactor',
+    },
+    {
+      id: 'codex-review-changes',
+      label: 'Review my changes',
+      description: 'Spot issues or improvements',
+      prompt: 'Review my recent code changes and suggest improvements',
+      icon: '👀',
+      action: 'review',
+    },
+    {
+      id: 'codex-explain-file',
+      label: 'Explain this file',
+      description: 'Get a quick overview of the file',
+      prompt: 'Explain what this file does and how it works',
+      icon: '📖',
+      action: 'explain',
+    },
+    {
+      id: 'codex-fix-lint',
+      label: 'Fix lint errors',
+      description: 'Resolve linting and formatting issues',
+      prompt: 'Fix all linting and formatting errors in the codebase',
+      icon: '✨',
+      action: 'fix',
+    },
+  ],
+  gemini: [
+    {
+      id: 'gemini-summarize',
+      label: 'Summarize changes',
+      description: 'Summarize the latest edits',
+      prompt: 'Summarize the recent code changes and their impact',
+      icon: '🧾',
+      action: 'review',
+    },
+    {
+      id: 'gemini-explain-file',
+      label: 'Explain this file',
+      description: 'Get a high-level walkthrough',
+      prompt: 'Explain what this file does and how it works',
+      icon: '📖',
+      action: 'explain',
+    },
+    {
+      id: 'gemini-find-bugs',
+      label: 'Find potential bugs',
+      description: 'Spot likely issues or edge cases',
+      prompt: 'Find potential bugs and edge cases in this code',
+      icon: '🐛',
+      action: 'review',
+    },
+    {
+      id: 'gemini-add-docs',
+      label: 'Add documentation',
+      description: 'Improve docs and comments',
+      prompt: 'Add or improve documentation for the current code',
+      icon: '📝',
+      action: 'generate',
+    },
+    {
+      id: 'gemini-refactor',
+      label: 'Refactor for clarity',
+      description: 'Simplify and clean up logic',
+      prompt: 'Refactor the code for clarity and maintainability',
+      icon: '🧹',
+      action: 'refactor',
+    },
+    {
+      id: 'gemini-fix-tests',
+      label: 'Fix failing tests',
+      description: 'Make tests pass again',
+      prompt: 'Fix the failing tests and make sure all tests pass',
+      icon: '🧪',
+      action: 'fix',
+    },
+  ],
+};
 
-export function getSuggestedIntents(input: string): PredefinedIntent[] {
+export function getSuggestedIntents(input: string, agentId: AgentId): PredefinedIntent[] {
+  const intents = INTENTS_BY_AGENT[agentId] ?? [];
   if (!input.trim()) {
-    return PREDEFINED_INTENTS.slice(0, 4);
+    return intents.slice(0, 4);
   }
 
   const lowerInput = input.toLowerCase();
-  return PREDEFINED_INTENTS.filter(
+  return intents.filter(
     (intent) =>
       intent.label.toLowerCase().includes(lowerInput) ||
       intent.description.toLowerCase().includes(lowerInput) ||
