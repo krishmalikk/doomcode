@@ -2,30 +2,31 @@
 set -e
 
 echo "=== Xcode Cloud ci_post_clone.sh ==="
-echo "Current directory: $(pwd)"
-echo "Script location: $0"
 
-# Navigate to iOS project directory (one level up from ci_scripts)
-cd "$(dirname "$0")/.."
-echo "Changed to: $(pwd)"
-echo "Contents:"
-ls -la
+# Install Node.js and pnpm
+echo "Installing Node.js..."
+brew install node
+echo "Installing pnpm..."
+npm install -g pnpm
 
-# Check if Podfile exists
-if [ ! -f "Podfile" ]; then
-    echo "ERROR: Podfile not found in $(pwd)"
-    exit 1
-fi
+# Navigate to monorepo root and install JS dependencies
+cd "$CI_PRIMARY_REPOSITORY_PATH"
+echo "Monorepo root: $(pwd)"
+echo "Installing JS dependencies with pnpm..."
+pnpm install
 
-# Install CocoaPods using gem (more reliable on Xcode Cloud)
-echo "Installing CocoaPods via gem..."
+# Navigate to iOS directory
+cd "$CI_PRIMARY_REPOSITORY_PATH/apps/mobile/ios"
+echo "iOS directory: $(pwd)"
+
+# Install CocoaPods
+echo "Installing CocoaPods..."
 export GEM_HOME=$HOME/.gem
 export PATH="$GEM_HOME/bin:$PATH"
 gem install cocoapods --user-install
 
-echo "CocoaPods version: $(pod --version)"
+# Run pod install
 echo "Running pod install..."
-pod install --repo-update --verbose
+pod install --repo-update
 
-echo "=== Pod install complete ==="
-ls -la Pods/ || echo "WARNING: Pods directory not created"
+echo "=== Complete ==="
