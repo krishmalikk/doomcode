@@ -1,32 +1,32 @@
 #!/bin/zsh
-set -e
+set -eo pipefail
 
 echo "=== Xcode Cloud ci_post_clone.sh ==="
+echo "Current directory: $(pwd)"
 
-# Install Node.js and pnpm
-echo "Installing Node.js..."
-brew install node
-echo "Installing pnpm..."
-npm install -g pnpm
+# Navigate to monorepo root (from ios/ci_scripts -> root)
+cd ../../
+REPO_ROOT=$(pwd)
+echo "Repo root: $REPO_ROOT"
 
-# Navigate to monorepo root and install JS dependencies
-cd "$CI_PRIMARY_REPOSITORY_PATH"
-echo "Monorepo root: $(pwd)"
+# Install dependencies via Homebrew
+echo "Installing Node.js and CocoaPods via Homebrew..."
+brew install node cocoapods
+
+# Enable corepack for pnpm (built into Node.js, no global install needed)
+echo "Enabling corepack for pnpm..."
+corepack enable
+corepack prepare pnpm@latest --activate
+
+# Install JS dependencies
 echo "Installing JS dependencies with pnpm..."
-pnpm install
+pnpm install --frozen-lockfile
 
-# Navigate to iOS directory
-cd "$CI_PRIMARY_REPOSITORY_PATH/apps/mobile/ios"
+# Navigate to iOS directory and run pod install
+cd "$REPO_ROOT/apps/mobile/ios"
 echo "iOS directory: $(pwd)"
 
-# Install CocoaPods
-echo "Installing CocoaPods..."
-export GEM_HOME=$HOME/.gem
-export PATH="$GEM_HOME/bin:$PATH"
-gem install cocoapods --user-install
-
-# Run pod install
 echo "Running pod install..."
-pod install --repo-update
+pod install
 
-echo "=== Complete ==="
+echo "=== ci_post_clone.sh complete ==="
