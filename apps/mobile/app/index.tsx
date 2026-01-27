@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
@@ -12,7 +14,11 @@ export default function HomeScreen() {
         <Text style={styles.subtitle}>Control your AI coding agent from anywhere</Text>
       </View>
 
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={[styles.contentContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}
+        showsVerticalScrollIndicator={false}
+      >
         <TouchableOpacity style={styles.button} onPress={() => router.push('/scan')}>
           <Text style={styles.buttonText}>Scan QR Code</Text>
           <Text style={styles.buttonSubtext}>Pair with your desktop</Text>
@@ -38,7 +44,7 @@ export default function HomeScreen() {
             <Text style={styles.infoText}>Control your coding agent from your phone</Text>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -73,6 +79,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  contentContainer: {
+    paddingBottom: 20,
   },
   button: {
     backgroundColor: '#ffffff',

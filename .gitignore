@@ -17,6 +17,8 @@ dist/
 web-build/
 android/
 ios/
+!apps/mobile/ios/
+!apps/mobile/ios/**
 
 # Cloudflare Workers
 .wrangler/
