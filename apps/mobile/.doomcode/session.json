@@ -1,0 +1,10 @@
+{
+  "sessionId": "de706fbd-7055-4762-b933-408d1d68c3e8",
+  "wsUrl": "wss://elz7wfhx70.execute-api.us-east-1.amazonaws.com/prod",
+  "httpUrl": "https://jsmutqne72.execute-api.us-east-1.amazonaws.com/prod",
+  "keyPair": {
+    "publicKey": "X9a+JLSsQWeRlWubfKkFDGnvBgHp1tHT/km+oI3bYDo=",
+    "secretKey": "GBPWKi6V1H1BG3thM4HswLTWHS1XiB9PMX2j4kuy9I4="
+  },
+  "updatedAt": 1769046701997
+}

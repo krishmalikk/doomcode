@@ -1,0 +1,27 @@
+{
+  "name": "@doomcode/crypto",
+  "version": "0.1.0",
+  "description": "E2E encryption utilities for DoomCode",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.0"
+  }
+}

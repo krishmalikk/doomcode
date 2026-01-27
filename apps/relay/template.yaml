@@ -1,0 +1,296 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: DoomCode Relay Server - WebSocket API for mobile-desktop communication
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs20.x
+    MemorySize: 256
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        CONNECTIONS_TABLE: !Ref ConnectionsTable
+        SESSIONS_TABLE: !Ref SessionsTable
+        MESSAGES_TABLE: !Ref MessagesTable
+
+Resources:
+  # ============================================================================
+  # WebSocket API
+  # ============================================================================
+  WebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: DoomCodeRelayWebSocket
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: $request.body.action
+
+  # Connect Route
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $connect
+      AuthorizationType: NONE
+      Target: !Sub integrations/${ConnectIntegration}
+
+  ConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConnectFunction.Arn}/invocations
+
+  # Disconnect Route
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      Target: !Sub integrations/${DisconnectIntegration}
+
+  DisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DisconnectFunction.Arn}/invocations
+
+  # Default Route (messages)
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $default
+      AuthorizationType: NONE
+      Target: !Sub integrations/${DefaultIntegration}
+
+  DefaultIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MessageFunction.Arn}/invocations
+
+  # Deployment
+  WebSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - ConnectRoute
+      - DisconnectRoute
+      - DefaultRoute
+    Properties:
+      ApiId: !Ref WebSocketApi
+
+  WebSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref WebSocketApi
+      StageName: prod
+      DeploymentId: !Ref WebSocketDeployment
+
+  # ============================================================================
+  # HTTP API (for session creation)
+  # ============================================================================
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+
+  # ============================================================================
+  # Lambda Functions
+  # ============================================================================
+  ConnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/connect.handler
+      CodeUri: dist/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+
+  ConnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ConnectFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$connect
+
+  DisconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/disconnect.handler
+      CodeUri: dist/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - execute-api:ManageConnections
+              Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*
+
+  DisconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DisconnectFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$disconnect
+
+  MessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/message.handler
+      CodeUri: dist/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MessagesTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - execute-api:ManageConnections
+              Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*
+
+  MessagePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref MessageFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$default
+
+  CreateSessionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/http.createSessionHandler
+      CodeUri: dist/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+      Events:
+        CreateSession:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /session
+            Method: POST
+
+  GetSessionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/http.getSessionHandler
+      CodeUri: dist/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref SessionsTable
+      Events:
+        GetSession:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /session/{sessionId}
+            Method: GET
+
+  HealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/http.healthHandler
+      CodeUri: dist/
+      Events:
+        Health:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /health
+            Method: GET
+
+  # ============================================================================
+  # DynamoDB Tables
+  # ============================================================================
+  ConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-connections
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: connectionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: connectionId
+          KeyType: HASH
+
+  SessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-sessions
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: sessionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sessionId
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  MessagesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-messages
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: sessionId
+          AttributeType: S
+        - AttributeName: messageId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sessionId
+          KeyType: HASH
+        - AttributeName: messageId
+          KeyType: RANGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+Outputs:
+  WebSocketUrl:
+    Description: WebSocket URL for DoomCode relay
+    Value: !Sub wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${WebSocketStage}
+
+  HttpApiUrl:
+    Description: HTTP API URL for session management
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod
+
+  ConnectionsTableName:
+    Description: DynamoDB table for connections
+    Value: !Ref ConnectionsTable
+
+  SessionsTableName:
+    Description: DynamoDB table for sessions
+    Value: !Ref SessionsTable
+
+  MessagesTableName:
+    Description: DynamoDB table for queued messages
+    Value: !Ref MessagesTable

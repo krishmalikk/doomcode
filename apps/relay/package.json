@@ -1,0 +1,25 @@
+{
+  "name": "@doomcode/relay",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWS API Gateway + Lambda relay server for DoomCode",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node esbuild.config.js",
+    "deploy": "pnpm build && sam deploy --guided",
+    "deploy:prod": "pnpm build && sam deploy --no-confirm-changeset",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.700.0",
+    "@aws-sdk/client-dynamodb": "^3.700.0",
+    "@aws-sdk/lib-dynamodb": "^3.700.0",
+    "@doomcode/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^20.17.12",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.3"
+  }
+}
