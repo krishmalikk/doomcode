@@ -10,13 +10,8 @@ REPO_ROOT=$(pwd)
 echo "Repo root: $REPO_ROOT"
 
 # Install dependencies via Homebrew
-echo "Installing Node.js and CocoaPods via Homebrew..."
-brew install node cocoapods
-
-# Enable corepack for pnpm (built into Node.js, no global install needed)
-echo "Enabling corepack for pnpm..."
-corepack enable
-corepack prepare pnpm@latest --activate
+echo "Installing Node.js, pnpm, and CocoaPods via Homebrew..."
+brew install node pnpm cocoapods
 
 # Install JS dependencies
 echo "Installing JS dependencies with pnpm..."
