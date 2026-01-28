@@ -18,10 +18,11 @@ echo "Repo root: $REPO_ROOT"
 echo "Contents of repo root:"
 ls -la "$REPO_ROOT"
 
-# Install Node.js and pnpm via Homebrew
+# Install Node.js, pnpm, and cmake via Homebrew
+# cmake is required by hermes-engine podspec
 echo ""
-echo "=== Installing Node.js and pnpm via Homebrew ==="
-brew install node pnpm
+echo "=== Installing Node.js, pnpm, and cmake via Homebrew ==="
+brew install node pnpm cmake
 
 # Update PATH to include Homebrew binaries
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
