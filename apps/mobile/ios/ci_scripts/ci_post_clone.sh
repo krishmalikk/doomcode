@@ -56,6 +56,19 @@ NODE_PATH=$(which node)
 echo "export NODE_BINARY=${NODE_PATH}" > "$IOS_DIR/.xcode.env.local"
 cat "$IOS_DIR/.xcode.env.local"
 
+# CRITICAL: Restore Podfile.properties.json with static frameworks
+# expo prebuild --clean overwrites this file with defaults, losing our settings
+echo ""
+echo "=== Restoring Podfile.properties.json with static frameworks ==="
+cat > "$IOS_DIR/Podfile.properties.json" << 'PODFILE_PROPS'
+{
+  "expo.jsEngine": "hermes",
+  "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
+  "ios.useFrameworks": "static"
+}
+PODFILE_PROPS
+cat "$IOS_DIR/Podfile.properties.json"
+
 # Run pod install
 echo ""
 echo "=== Running pod install ==="
