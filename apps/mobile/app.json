@@ -15,7 +15,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.doomcode.app",
+      "bundleIdentifier": "com.krishess.doomcode",
       "infoPlist": {
         "NSCameraUsageDescription": "DoomCode needs camera access to scan QR codes for pairing with your desktop."
       }
