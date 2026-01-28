@@ -34,6 +34,12 @@ echo ""
 echo "=== Installing JS dependencies with pnpm ==="
 pnpm install --frozen-lockfile
 
+# Build workspace packages (protocol, crypto, etc.)
+# These need to be compiled before Metro can resolve them
+echo ""
+echo "=== Building workspace packages ==="
+pnpm build
+
 # Navigate to mobile app
 MOBILE_DIR="$REPO_ROOT/apps/mobile"
 cd "$MOBILE_DIR"
