@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useSessionStore } from '../src/store/session';
 import { useAgentStore } from '../src/store/agentStore';
 import { TerminalView } from '../src/components/TerminalView';
 import { PermissionModal } from '../src/components/PermissionModal';
+import { YesNoModal } from '../src/components/YesNoModal';
 import { DiffViewer } from '../src/components/DiffViewer';
 import { PatchHistory } from '../src/components/diff/PatchHistory';
 import { Toast } from '../src/components/Toast';
@@ -22,6 +24,40 @@ import { SmartInputBar } from '../src/components/input';
 
 type TabType = 'terminal' | 'diffs' | 'settings';
 
+// Patterns that indicate a yes/no question from AI
+const YES_NO_PATTERNS = [
+  /\(y\/n\)/i,
+  /\[y\/n\]/i,
+  /\[yes\/no\]/i,
+  /\(yes\/no\)/i,
+  /proceed\?/i,
+  /continue\?/i,
+  /confirm\?/i,
+  /do you want to proceed/i,
+  /would you like to proceed/i,
+  /should i proceed/i,
+  /do you want me to/i,
+  /would you like me to/i,
+  /shall i/i,
+];
+
+function detectYesNoQuestion(text: string): string | null {
+  // Check if any pattern matches
+  for (const pattern of YES_NO_PATTERNS) {
+    if (pattern.test(text)) {
+      // Extract the question (last sentence or line containing the pattern)
+      const lines = text.split('\n').filter(l => l.trim());
+      for (let i = lines.length - 1; i >= 0; i--) {
+        if (pattern.test(lines[i])) {
+          return lines[i].trim();
+        }
+      }
+      return text.trim();
+    }
+  }
+  return null;
+}
+
 export default function SessionScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('terminal');
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: 'info' | 'success' | 'error' }>({
@@ -29,7 +65,10 @@ export default function SessionScreen() {
     message: '',
     type: 'info',
   });
+  const [yesNoQuestion, setYesNoQuestion] = useState<string | null>(null);
+  const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
 
   const {
     terminalOutput,
@@ -45,6 +84,29 @@ export default function SessionScreen() {
   const { setLastPrompt } = useAgentStore();
   const currentPermission = pendingPermissions[0];
 
+  // Detect yes/no questions from terminal output
+  useEffect(() => {
+    if (terminalOutput.length === 0) return;
+
+    // Check the last few messages for yes/no questions
+    const recentOutput = terminalOutput.slice(-5);
+    for (const msg of recentOutput.reverse()) {
+      const question = detectYesNoQuestion(msg.data);
+      if (question && !answeredQuestions.has(question)) {
+        setYesNoQuestion(question);
+        break;
+      }
+    }
+  }, [terminalOutput, answeredQuestions]);
+
+  const handleYesNoResponse = (response: 'yes' | 'no') => {
+    if (yesNoQuestion) {
+      setAnsweredQuestions(prev => new Set(prev).add(yesNoQuestion));
+      sendPrompt(response);
+      setYesNoQuestion(null);
+    }
+  };
+
   const showToast = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
     setToast({ visible: true, message, type });
   };
@@ -56,7 +118,8 @@ export default function SessionScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
     <KeyboardAvoidingView
       style={styles.keyboardView}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -155,8 +218,16 @@ export default function SessionScreen() {
           }
         />
       )}
+
+      {/* Yes/No Question Modal */}
+      <YesNoModal
+        visible={!!yesNoQuestion}
+        question={yesNoQuestion || ''}
+        onYes={() => handleYesNoResponse('yes')}
+        onNo={() => handleYesNoResponse('no')}
+      />
     </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
