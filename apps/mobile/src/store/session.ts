@@ -11,11 +11,13 @@ import type {
   AgentId,
   AgentConfig,
   AgentControlMessage,
+  PRCreateResultMessage,
 } from '@doomcode/protocol';
 import { createEnvelope } from '@doomcode/protocol';
 import { generateKeyPair, E2ECrypto, type KeyPair } from '@doomcode/crypto';
 import { useAgentStore } from './agentStore';
 import { usePatchHistoryStore } from './patchHistoryStore';
+import { useGitHubStore } from './githubStore';
 
 type AgentStatus = 'idle' | 'running' | 'waiting_input' | 'error';
 
@@ -45,6 +47,16 @@ interface SessionState {
     config?: Partial<AgentConfig>
   ) => void;
   sendUndoRequest: (patchId: string) => void;
+
+  // GitHub actions
+  sendGitHubToken: () => void;
+  revokeGitHubToken: () => void;
+  requestCreatePR: (params: {
+    branchName: string;
+    title: string;
+    body: string;
+    draft?: boolean;
+  }) => void;
 }
 
 export const useSessionStore = create<SessionState>((set, get) => ({
@@ -220,6 +232,16 @@ export const useSessionStore = create<SessionState>((set, get) => ({
                 if (msg.success) {
                   usePatchHistoryStore.getState().removePatch(msg.patchId);
                 }
+                break;
+
+              case 'pr_create_result':
+                // Handle PR creation result from desktop
+                useGitHubStore.getState().setPRResult({
+                  success: (msg as PRCreateResultMessage).success,
+                  prUrl: (msg as PRCreateResultMessage).prUrl,
+                  prNumber: (msg as PRCreateResultMessage).prNumber,
+                  error: (msg as PRCreateResultMessage).error,
+                });
                 break;
             }
           }
@@ -401,6 +423,103 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     const msg: Message = {
       type: 'undo_request',
       patchId,
+    };
+
+    const encrypted = crypto.encrypt(JSON.stringify(msg));
+    const envelope = createEnvelope({
+      sessionId,
+      sender: 'mobile',
+      nonce: encrypted.nonce,
+      encryptedPayload: encrypted.ciphertext,
+    });
+
+    ws.send(JSON.stringify(envelope));
+  },
+
+  // GitHub methods
+  sendGitHubToken: () => {
+    const { ws, crypto, sessionId } = get();
+    const githubStore = useGitHubStore.getState();
+
+    if (!ws || !crypto || !sessionId) {
+      console.warn('sendGitHubToken skipped: not connected/paired yet');
+      return;
+    }
+
+    if (!githubStore.accessToken) {
+      console.warn('sendGitHubToken skipped: no token available');
+      return;
+    }
+
+    const msg: Message = {
+      type: 'github_token_share',
+      accessToken: githubStore.accessToken,
+      tokenType: 'Bearer',
+      scope: githubStore.tokenScope || 'repo',
+      expiresAt: githubStore.tokenExpiresAt ?? undefined,
+    };
+
+    const encrypted = crypto.encrypt(JSON.stringify(msg));
+    const envelope = createEnvelope({
+      sessionId,
+      sender: 'mobile',
+      nonce: encrypted.nonce,
+      encryptedPayload: encrypted.ciphertext,
+    });
+
+    ws.send(JSON.stringify(envelope));
+    githubStore.markTokenShared();
+  },
+
+  revokeGitHubToken: () => {
+    const { ws, crypto, sessionId } = get();
+    const githubStore = useGitHubStore.getState();
+
+    if (!ws || !crypto || !sessionId) {
+      console.warn('revokeGitHubToken skipped: not connected/paired yet');
+      return;
+    }
+
+    const msg: Message = {
+      type: 'github_token_revoke',
+    };
+
+    const encrypted = crypto.encrypt(JSON.stringify(msg));
+    const envelope = createEnvelope({
+      sessionId,
+      sender: 'mobile',
+      nonce: encrypted.nonce,
+      encryptedPayload: encrypted.ciphertext,
+    });
+
+    ws.send(JSON.stringify(envelope));
+    githubStore.markTokenRevoked();
+  },
+
+  requestCreatePR: (params) => {
+    const { ws, crypto, sessionId } = get();
+    const githubStore = useGitHubStore.getState();
+
+    if (!ws || !crypto || !sessionId) {
+      console.warn('requestCreatePR skipped: not connected/paired yet');
+      return;
+    }
+
+    if (!githubStore.tokenSharedWithDesktop) {
+      console.warn('requestCreatePR skipped: token not shared with desktop');
+      return;
+    }
+
+    const requestId = `pr-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    githubStore.setPendingPR(requestId);
+
+    const msg: Message = {
+      type: 'pr_create_request',
+      requestId,
+      branchName: params.branchName,
+      title: params.title,
+      body: params.body,
+      draft: params.draft,
     };
 
     const encrypted = crypto.encrypt(JSON.stringify(msg));

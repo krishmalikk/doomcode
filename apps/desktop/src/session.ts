@@ -22,6 +22,8 @@ import {
   type UndoRequestMessage,
   type UndoResultMessage,
   type PatchAppliedMessage,
+  type GitHubTokenShareMessage,
+  type PRCreateRequestMessage,
   type AgentId,
   encodeQRPayload,
 } from '@doomcode/protocol';
@@ -29,6 +31,7 @@ import WebSocket from 'ws';
 import qrcode from 'qrcode-terminal';
 import { AgentManager } from './agent/agent-manager.js';
 import { PatchTracker } from './agent/patch-tracker.js';
+import { GitHubHandler } from './github/github-handler.js';
 
 export interface SessionOptions {
   /** WebSocket URL for the relay (e.g., wss://xxx.execute-api.region.amazonaws.com/prod) */
@@ -50,6 +53,7 @@ export class DoomCodeSession {
   private sessionId: string | null = null;
   private agentManager: AgentManager | null = null;
   private patchTracker: PatchTracker;
+  private githubHandler: GitHubHandler;
   private messageSequence = 0;
   private sessionCachePath: string | null = null;
   private debugSession = process.env.DOOMCODE_DEBUG_SESSION === '1';
@@ -68,6 +72,7 @@ export class DoomCodeSession {
     this.sessionId = options.sessionId ?? null;
     this.sessionCachePath = options.sessionCachePath ?? null;
     this.patchTracker = new PatchTracker(options.workingDirectory);
+    this.githubHandler = new GitHubHandler(options.workingDirectory);
   }
 
   async start(): Promise<void> {
@@ -361,6 +366,18 @@ export class DoomCodeSession {
       case 'undo_request':
         this.handleUndoRequest(msg as UndoRequestMessage);
         break;
+
+      case 'github_token_share':
+        this.githubHandler.handleTokenShare(msg as GitHubTokenShareMessage);
+        break;
+
+      case 'github_token_revoke':
+        this.githubHandler.handleTokenRevoke();
+        break;
+
+      case 'pr_create_request':
+        this.handlePRCreateRequest(msg as PRCreateRequestMessage);
+        break;
     }
   }
 
@@ -453,6 +470,19 @@ export class DoomCodeSession {
     }
 
     this.agentManager?.handlePatchDecision(msg as any);
+  }
+
+  private async handlePRCreateRequest(msg: PRCreateRequestMessage): Promise<void> {
+    this.logDebug(`>>> [DESKTOP] PR create request: ${msg.title}`);
+
+    const result = await this.githubHandler.createPullRequest(msg);
+    this.sendEncrypted(result);
+
+    if (result.success) {
+      console.log(`\n✓ Pull request created: ${result.prUrl}`);
+    } else {
+      console.log(`\n✗ Failed to create pull request: ${result.error}`);
+    }
   }
 
   private sendEncrypted(msg: Message): void {

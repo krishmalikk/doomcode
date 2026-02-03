@@ -17,7 +17,11 @@ export type MessageType =
   | 'agent_status_update'
   | 'undo_request'
   | 'undo_result'
-  | 'patch_applied';
+  | 'patch_applied'
+  | 'github_token_share'
+  | 'github_token_revoke'
+  | 'pr_create_request'
+  | 'pr_create_result';
 
 export interface BaseMessage {
   type: MessageType;
@@ -242,6 +246,51 @@ export interface ErrorMessage extends BaseMessage {
 }
 
 // ============================================================================
+// GitHub Integration
+// ============================================================================
+
+export interface GitHubTokenShareMessage extends BaseMessage {
+  type: 'github_token_share';
+  accessToken: string;
+  tokenType: string;
+  scope: string;
+  expiresAt?: number;
+}
+
+export interface GitHubTokenRevokeMessage extends BaseMessage {
+  type: 'github_token_revoke';
+}
+
+export type PRCreateErrorCode =
+  | 'NO_TOKEN'
+  | 'NO_CHANGES'
+  | 'PUSH_FAILED'
+  | 'PR_CREATE_FAILED'
+  | 'BRANCH_EXISTS'
+  | 'NOT_GIT_REPO'
+  | 'NO_REMOTE';
+
+export interface PRCreateRequestMessage extends BaseMessage {
+  type: 'pr_create_request';
+  requestId: string;
+  branchName: string;
+  title: string;
+  body: string;
+  baseBranch?: string;
+  draft?: boolean;
+}
+
+export interface PRCreateResultMessage extends BaseMessage {
+  type: 'pr_create_result';
+  requestId: string;
+  success: boolean;
+  prUrl?: string;
+  prNumber?: number;
+  error?: string;
+  errorCode?: PRCreateErrorCode;
+}
+
+// ============================================================================
 // Union Type
 // ============================================================================
 
@@ -259,4 +308,8 @@ export type Message =
   | AgentStatusUpdateMessage
   | UndoRequestMessage
   | UndoResultMessage
-  | PatchAppliedMessage;
+  | PatchAppliedMessage
+  | GitHubTokenShareMessage
+  | GitHubTokenRevokeMessage
+  | PRCreateRequestMessage
+  | PRCreateResultMessage;

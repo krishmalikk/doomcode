@@ -76,14 +76,13 @@ export function CommandPalette({ visible, onClose, onSelectIntent }: CommandPale
                 onPress={handleCustomSubmit}
                 activeOpacity={0.7}
               >
-                <Text style={styles.customIcon}>💬</Text>
                 <View style={styles.intentInfo}>
                   <Text style={styles.intentLabel}>Send custom prompt</Text>
                   <Text style={styles.intentDescription} numberOfLines={1}>
                     "{searchQuery}"
                   </Text>
                 </View>
-                <Text style={styles.arrowIcon}>→</Text>
+                <Text style={styles.arrowIcon}>{">"}</Text>
               </TouchableOpacity>
             )}
 
@@ -94,12 +93,11 @@ export function CommandPalette({ visible, onClose, onSelectIntent }: CommandPale
                 onPress={() => handleSelectIntent(intent)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.intentIcon}>{intent.icon}</Text>
                 <View style={styles.intentInfo}>
-                  <Text style={styles.intentLabel}>{intent.label}</Text>
+                  <Text style={styles.commandLabel}>{intent.label}</Text>
                   <Text style={styles.intentDescription}>{intent.description}</Text>
                 </View>
-                <Text style={styles.arrowIcon}>→</Text>
+                <Text style={styles.arrowIcon}>{">"}</Text>
               </TouchableOpacity>
             ))}
 
@@ -115,12 +113,11 @@ export function CommandPalette({ visible, onClose, onSelectIntent }: CommandPale
                     onPress={() => handleSelectIntent(intent)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.intentIcon}>{intent.icon}</Text>
                     <View style={styles.intentInfo}>
-                      <Text style={styles.intentLabel}>{intent.label}</Text>
+                      <Text style={styles.commandLabel}>{intent.label}</Text>
                       <Text style={styles.intentDescription}>{intent.description}</Text>
                     </View>
-                    <Text style={styles.arrowIcon}>→</Text>
+                    <Text style={styles.arrowIcon}>{">"}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -204,14 +201,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ffffff',
   },
-  intentIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  customIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
   intentInfo: {
     flex: 1,
   },
@@ -221,13 +210,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 2,
   },
+  commandLabel: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Menlo',
+    marginBottom: 2,
+  },
   intentDescription: {
     color: '#aaaaaa',
     fontSize: 13,
   },
   arrowIcon: {
-    color: '#ffffff',
-    fontSize: 18,
+    color: '#666666',
+    fontSize: 16,
+    fontFamily: 'Menlo',
     marginLeft: 8,
   },
   allIntentsSection: {

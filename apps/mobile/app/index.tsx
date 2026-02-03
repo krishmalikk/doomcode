@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,9 +8,15 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+
       <View style={styles.header}>
-        <Image source={require('../assets/doomcodelogo.png')} style={styles.logo} />
-        <Text style={styles.title}>DoomCode</Text>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>Doomcode</Text>
         <Text style={styles.subtitle}>Control your AI coding agent from anywhere</Text>
       </View>
 
@@ -52,29 +58,29 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   header: {
     alignItems: 'center',
     marginTop: 40,
-    marginBottom: 40,
+    marginBottom: 30,
   },
   logo: {
     width: 120,
-    height: 120,
-    marginBottom: 16,
-    resizeMode: 'contain',
+    height: 80,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontSize: 42,
+    fontWeight: '700',
+    color: '#000000',
+    letterSpacing: -1,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#a0a0a0',
+    color: '#666666',
     textAlign: 'center',
   },
   content: {
@@ -84,31 +90,31 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   button: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#000000',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
     marginBottom: 40,
   },
   buttonText: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   buttonSubtext: {
-    color: '#000000',
+    color: '#cccccc',
     fontSize: 14,
     marginTop: 4,
   },
   infoSection: {
-    backgroundColor: '#111111',
+    backgroundColor: '#f5f5f5',
     borderRadius: 12,
     padding: 20,
   },
   infoTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 16,
   },
   infoItem: {
@@ -123,23 +129,21 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#ffffff',
-    color: '#000000',
+    backgroundColor: '#000000',
+    color: '#ffffff',
     textAlign: 'center',
     lineHeight: 28,
     fontWeight: 'bold',
     marginRight: 12,
   },
   infoText: {
-    color: '#a0a0a0',
+    color: '#666666',
     fontSize: 14,
     flex: 1,
   },
   terminalBlock: {
-    backgroundColor: '#000000',
+    backgroundColor: '#1a1a1a',
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#333333',
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginTop: 8,

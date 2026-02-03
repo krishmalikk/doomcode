@@ -1,10 +1,10 @@
 {
-  "sessionId": "3de991a0-c600-495b-80eb-055872951434",
+  "sessionId": "5908323c-eee6-4a8b-b1c8-4d1f71d0adca",
   "wsUrl": "wss://elz7wfhx70.execute-api.us-east-1.amazonaws.com/prod",
   "httpUrl": "https://jsmutqne72.execute-api.us-east-1.amazonaws.com/prod",
   "keyPair": {
-    "publicKey": "+9s7tzl3lVscRp+RXI2BA1S0qKcoUubasuN3HhCQ5xk=",
-    "secretKey": "6l8+PfX8VQ2jSkd6Z6Y1WWyjVnZF5ryfVm+py52coVQ="
+    "publicKey": "Jgh5MXwpFPDfplABNDIJTQFsfm22V8TuSixYcdRyhn4=",
+    "secretKey": "fm1tlOTjQqF78Ak1/dCZ+hoPrwA9ErFQEzhzV9G0Pbg="
   },
-  "updatedAt": 1769648881635
+  "updatedAt": 1770138931388
 }

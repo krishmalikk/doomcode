@@ -28,7 +28,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="index"
           options={{
-            title: 'DoomCode',
+            headerShown: false,
           }}
         />
         <Stack.Screen
@@ -41,8 +41,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="session"
           options={{
-            title: 'Session',
-            headerBackVisible: false,
+            headerShown: false,
           }}
         />
       </Stack>
