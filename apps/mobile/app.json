@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.krrishess.doomcode",
-      "buildNumber": "35",
+      "buildNumber": "36",
       "infoPlist": {
         "NSCameraUsageDescription": "DoomCode needs camera access to scan QR codes for pairing with your desktop."
       }
