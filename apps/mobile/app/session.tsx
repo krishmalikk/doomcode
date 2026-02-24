@@ -15,6 +15,7 @@ import { useSessionStore } from '../src/store/session';
 import { useAgentStore } from '../src/store/agentStore';
 import { useGitHubStore } from '../src/store/githubStore';
 import { TerminalView } from '../src/components/TerminalView';
+import { HybridTerminalView } from '../src/components/terminal';
 import { PermissionModal } from '../src/components/PermissionModal';
 import { YesNoModal } from '../src/components/YesNoModal';
 import { Toast } from '../src/components/Toast';
@@ -75,6 +76,7 @@ export default function SessionScreen() {
   const [yesNoQuestion, setYesNoQuestion] = useState<string | null>(null);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [showCreatePR, setShowCreatePR] = useState(false);
+  const [useHybridTerminal, setUseHybridTerminal] = useState(true); // New hybrid terminal by default
 
   const {
     terminalOutput,
@@ -278,6 +280,14 @@ export default function SessionScreen() {
                 <Text style={styles.badgeText}>{pendingPermissions.length}</Text>
               </View>
             )}
+            <TouchableOpacity
+              style={styles.terminalToggle}
+              onPress={() => setUseHybridTerminal(!useHybridTerminal)}
+            >
+              <Text style={styles.terminalToggleText}>
+                {useHybridTerminal ? '◉' : '○'}
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.endButton} onPress={handleEndSession}>
               <Text style={styles.endButtonText}>✕</Text>
             </TouchableOpacity>
@@ -286,7 +296,18 @@ export default function SessionScreen() {
 
         {/* Full-Height Terminal View */}
         <View style={styles.terminalContainer}>
-          <TerminalView output={terminalOutput} />
+          {useHybridTerminal ? (
+            <HybridTerminalView
+              terminalOutput={terminalOutput}
+              pendingDiffs={pendingDiffs}
+              agentStatus={agentStatus}
+              lastPrompt={useAgentStore.getState().lastPrompt || undefined}
+              onDiffApply={handleDiffApprove}
+              onDiffReject={handleDiffReject}
+            />
+          ) : (
+            <TerminalView output={terminalOutput} />
+          )}
         </View>
 
         {/* Slide-up Panel */}
@@ -439,6 +460,20 @@ const styles = StyleSheet.create({
     color: '#cc4444',
     fontSize: 14,
     fontWeight: '600',
+  },
+  terminalToggle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#1a1a1a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#333333',
+  },
+  terminalToggleText: {
+    color: '#4ade80',
+    fontSize: 16,
   },
   terminalContainer: {
     flex: 1,
