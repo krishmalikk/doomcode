@@ -1,6 +1,6 @@
 {
   "name": "doomcode",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Desktop CLI wrapper for DoomCode",
   "type": "module",
@@ -10,15 +10,18 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:npm": "node scripts/build-npm.mjs",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit"
+    "clean": "rm -rf dist dist-npm",
+    "typecheck": "tsc --noEmit",
+    "prepublish:npm": "npm run build:npm",
+    "publish:npm": "cd dist-npm && npm publish"
   },
   "dependencies": {
     "@doomcode/crypto": "workspace:*",
-    "@doomcode/protocol": "workspace:*",
     "@doomcode/diff-parser": "workspace:*",
+    "@doomcode/protocol": "workspace:*",
     "commander": "^13.1.0",
     "node-pty": "^1.0.0",
     "qrcode-terminal": "^0.12.0",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "@types/ws": "^8.5.13"
+    "@types/ws": "^8.5.13",
+    "esbuild": "^0.24.2"
   }
 }
