@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DoomCode - Control your AI coding agent from anywhere. Mobile-first control for Claude, Codex, and Gemini.">
+  <title>DoomCode - Mobile AI Coding Agent Control</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/logo.png" alt="DoomCode Logo">
+        <span>DoomCode</span>
+      </a>
+      <button class="nav-toggle" onclick="toggleNav()">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <img src="assets/logo.png" alt="DoomCode" class="hero-logo">
+      <h1>DoomCode</h1>
+      <p class="tagline">Control your AI coding agent from anywhere. Review code, approve changes, and stay in the loop - all from your phone.</p>
+      <div class="btn-group">
+        <a href="#" class="btn btn-primary">
+          <span>Download for iOS</span>
+        </a>
+        <a href="#" class="btn btn-secondary">
+          <span>Download for Android</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Mobile Control</h3>
+          <p>Control your AI coding agent directly from your smartphone. Give commands, review outputs, and stay connected wherever you are.</p>
+        </div>
+        <div class="feature-card">
+          <h3>E2E Encryption</h3>
+          <p>All communication between your phone and desktop is end-to-end encrypted. Your code and commands stay private.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Diff Review</h3>
+          <p>Review code changes proposed by the AI before they're applied. Approve or reject patches with a single tap.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Voice Input</h3>
+          <p>Use speech-to-text for hands-free commands. Perfect for when you're away from your keyboard.</p>
+        </div>
+        <div class="feature-card">
+          <h3>QR Pairing</h3>
+          <p>Connect your phone to your desktop in seconds. Just scan the QR code and you're ready to go.</p>
+        </div>
+        <div class="feature-card">
+          <h3>GitHub Integration</h3>
+          <p>Create pull requests directly from your phone. Share GitHub tokens securely with your desktop session.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Agents -->
+  <section class="agents">
+    <div class="container">
+      <h2 class="section-title">Supported AI Agents</h2>
+      <div class="agents-grid">
+        <div class="agent-badge claude">
+          <span class="dot"></span>
+          <span>Claude</span>
+        </div>
+        <div class="agent-badge codex">
+          <span class="dot"></span>
+          <span>Codex</span>
+        </div>
+        <div class="agent-badge gemini">
+          <span class="dot"></span>
+          <span>Gemini</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Start on Desktop</h3>
+          <p>Run <code>doomcode start</code> in your terminal</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Scan QR Code</h3>
+          <p>Open the app and scan the QR code displayed</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Pair Securely</h3>
+          <p>E2E encrypted connection established</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Control Anywhere</h3>
+          <p>Send commands and review changes from your phone</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="support.html">Support</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+      <p class="copyright">&copy; 2026 Krish Malik. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

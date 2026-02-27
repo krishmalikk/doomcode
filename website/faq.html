@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DoomCode FAQ - Frequently asked questions about DoomCode, the mobile AI coding agent control app.">
+  <title>FAQ - DoomCode</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/logo.png" alt="DoomCode Logo">
+        <span>DoomCode</span>
+      </a>
+      <button class="nav-toggle" onclick="toggleNav()">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li><a href="faq.html" class="active">FAQ</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Frequently Asked Questions</h1>
+      <p>Everything you need to know about DoomCode</p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="content container">
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What is DoomCode?
+        </button>
+        <div class="faq-answer">
+          <p>DoomCode is a mobile app that lets you control AI coding agents (like Claude, Codex, or Gemini) from your phone. While the AI agent runs on your desktop, you can send commands, review code changes, and approve or reject modifications from anywhere using your smartphone.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Which AI agents are supported?
+        </button>
+        <div class="faq-answer">
+          <p>DoomCode currently supports three AI coding agents:</p>
+          <ul>
+            <li><strong>Claude</strong> - Anthropic's AI assistant</li>
+            <li><strong>Codex</strong> - OpenAI's coding model</li>
+            <li><strong>Gemini</strong> - Google's AI model</li>
+          </ul>
+          <p>Each agent must be installed and configured on your desktop before use with DoomCode.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How does the pairing process work?
+        </button>
+        <div class="faq-answer">
+          <p>Pairing is simple and secure:</p>
+          <ol>
+            <li>Run <code>doomcode start</code> on your desktop</li>
+            <li>A QR code appears in your terminal</li>
+            <li>Open the DoomCode app on your phone</li>
+            <li>Scan the QR code</li>
+            <li>You're connected!</li>
+          </ol>
+          <p>The connection is established through our relay servers with end-to-end encryption, so your phone and desktop don't need to be on the same network.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is my data secure?
+        </button>
+        <div class="faq-answer">
+          <p>Yes. All communication between your phone and desktop is end-to-end encrypted using TweetNaCl. This means:</p>
+          <ul>
+            <li>Your code and commands are encrypted before leaving your device</li>
+            <li>Only your paired devices can decrypt the data</li>
+            <li>Our relay servers cannot read your messages</li>
+            <li>No account or login is required - your session is completely anonymous</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What platforms are supported?
+        </button>
+        <div class="faq-answer">
+          <p><strong>Mobile:</strong> iOS 12.0+ and Android 8.0+</p>
+          <p><strong>Desktop:</strong> macOS, Windows, and Linux (requires Node.js 18+)</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do I need to be on the same network as my computer?
+        </button>
+        <div class="faq-answer">
+          <p>No! DoomCode uses relay servers to connect your devices, so you can control your desktop agent from anywhere with an internet connection. You could be at a coffee shop, on a train, or in another country - as long as both devices have internet access, you're good to go.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What is diff review?
+        </button>
+        <div class="faq-answer">
+          <p>When an AI agent proposes code changes, DoomCode shows you a diff (the differences between the old and new code). You can review exactly what the agent wants to change and either approve or reject the modification before it's applied. This gives you full control over what changes get made to your codebase.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I use voice commands?
+        </button>
+        <div class="faq-answer">
+          <p>Yes! DoomCode includes speech-to-text functionality, allowing you to give commands to your AI agent using your voice. This is especially useful when you're away from a keyboard or want hands-free control.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How do I create pull requests from the app?
+        </button>
+        <div class="faq-answer">
+          <p>DoomCode has built-in GitHub integration. You can securely share your GitHub token with your desktop session and create pull requests directly from the mobile app. Go to Settings in the app to configure your GitHub authentication.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is DoomCode free?
+        </button>
+        <div class="faq-answer">
+          <p>DoomCode is free to download and use. You'll need your own API keys or subscriptions for the AI agents you want to control (Claude, Codex, or Gemini), as DoomCode is the interface layer, not the AI service itself.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          I have more questions. How can I get help?
+        </button>
+        <div class="faq-answer">
+          <p>We're happy to help! Visit our <a href="support.html">Support page</a> or email us directly at <a href="mailto:krish.malik@gmail.com">krish.malik@gmail.com</a>.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="support.html">Support</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+      <p class="copyright">&copy; 2026 Krish Malik. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
+
+    function toggleFaq(button) {
+      const faqItem = button.parentElement;
+      faqItem.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

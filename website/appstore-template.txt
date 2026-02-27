@@ -1,0 +1,122 @@
+================================================================================
+                    DOOMCODE - APP STORE CONNECT TEMPLATE
+================================================================================
+
+Copy and paste the following content into App Store Connect.
+Replace "https://your-domain.com" with your actual domain when ready.
+
+================================================================================
+PROMOTIONAL TEXT (max 170 characters)
+================================================================================
+
+Control AI coding agents from your phone. Review diffs, approve changes, and command Claude, Codex, or Gemini - all with end-to-end encryption.
+
+Character count: 156
+
+================================================================================
+DESCRIPTION (max 4,000 characters)
+================================================================================
+
+Control your AI coding agent from anywhere with DoomCode.
+
+DoomCode is a mobile-first control system that lets you command AI coding agents running on your desktop - directly from your iPhone. Whether you're stepping away from your desk, commuting, or just prefer the convenience of your phone, DoomCode keeps you connected to your AI assistant.
+
+KEY FEATURES
+
+Mobile Agent Control
+Send commands and prompts to your AI coding agent from anywhere. Your agent runs on your desktop while you control it from your phone.
+
+Diff Review & Approval
+Review code changes proposed by the AI before they're applied. See exactly what modifications will be made and approve or reject with a single tap. Stay in full control of your codebase.
+
+End-to-End Encryption
+All communication between your phone and desktop is encrypted using TweetNaCl. Your code, commands, and data remain private - even we can't read them.
+
+Voice Input
+Use speech-to-text for hands-free commands. Perfect for when you're away from your keyboard or want to multitask.
+
+QR Code Pairing
+Connect your phone to your desktop in seconds. Just run the CLI command, scan the QR code, and you're paired.
+
+GitHub Integration
+Create pull requests directly from your phone. Securely share your GitHub token with your desktop session and manage your repositories on the go.
+
+SUPPORTED AI AGENTS
+
+- Claude by Anthropic
+- Codex by OpenAI
+- Gemini by Google
+
+HOW IT WORKS
+
+1. Install the DoomCode CLI on your desktop
+2. Run "doomcode start" in your terminal
+3. Scan the QR code with the DoomCode app
+4. Start controlling your AI agent from your phone
+
+REQUIREMENTS
+
+- Desktop: macOS, Windows, or Linux with Node.js 18+
+- One of the supported AI agent CLIs installed
+- Internet connection on both devices
+
+DoomCode is free to use. You'll need your own API keys or subscriptions for the AI agents you want to control.
+
+Privacy-focused: No account required. No data stored on our servers. Your code stays yours.
+
+Character count: 1,857
+
+================================================================================
+KEYWORDS (max 100 characters, comma-separated)
+================================================================================
+
+AI,coding,developer,Claude,Codex,Gemini,terminal,remote,code review,diff,agent
+
+Character count: 76
+
+================================================================================
+SUPPORT URL
+================================================================================
+
+https://your-domain.com/support
+
+================================================================================
+MARKETING URL (optional)
+================================================================================
+
+https://your-domain.com
+
+================================================================================
+VERSION
+================================================================================
+
+1.0.0
+
+================================================================================
+COPYRIGHT
+================================================================================
+
+2026 Krish Malik
+
+================================================================================
+CATEGORY SUGGESTIONS
+================================================================================
+
+Primary: Developer Tools
+Secondary: Productivity
+
+================================================================================
+AGE RATING
+================================================================================
+
+4+ (No objectionable content)
+
+================================================================================
+NOTES
+================================================================================
+
+- Screenshots: Required sizes are 1242x2688px, 2688x1242px, 1284x2778px, or 2778x1284px
+- App Preview videos: Optional, same dimensions as screenshots
+- Remember to replace all "https://your-domain.com" URLs with your actual domain
+
+================================================================================
